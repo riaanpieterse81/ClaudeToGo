@@ -62,7 +62,7 @@ func main() {
 	configFlag := flag.String("config", "", "Path to configuration file (JSON format)")
 	hookFlag := flag.Bool("hook", false, "Process hook event from stdin (for Claude Code hooks)")
 	monitorFlag := flag.Bool("monitor", false, "Monitor events in real-time")
-	logFileFlag := flag.String("logfile", "claude-events.log", "Path to log file")
+	logFileFlag := flag.String("logfile", "claude-events.jsonl", "Path to log file")
 	verboseFlag := flag.Bool("verbose", false, "Enable verbose debug output")
 	pollIntervalFlag := flag.Duration("poll-interval", 100*time.Millisecond, "Polling interval for monitoring")
 
