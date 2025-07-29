@@ -72,7 +72,7 @@ func BuildClaudeToGoCommand(config types.ConfigFile) string {
 	cmd.WriteString(execPath)
 	cmd.WriteString(" --hook")
 
-	if config.LogFile != "claude-events.log" {
+	if config.LogFile != "claude-events.jsonl" {
 		cmd.WriteString(fmt.Sprintf(` --logfile "%s"`, config.LogFile))
 	}
 

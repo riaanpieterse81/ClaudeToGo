@@ -82,7 +82,7 @@ Options:
   -hook
         Process hook event from stdin (for Claude Code hooks)
   -logfile string
-        Path to log file (default "claude-events.log")
+        Path to log file (default "claude-events.jsonl")
   -monitor
         Monitor events in real-time
   -poll-interval duration
@@ -127,7 +127,7 @@ ClaudeToGo uses JSON configuration files. The setup wizard creates `claudetogo-c
 
 ```json
 {
-  "logFile": "claude-events.log",
+  "logFile": "claude-events.jsonl",
   "pollInterval": "100ms",
   "verbose": false
 }
@@ -176,7 +176,7 @@ The tool integrates with Claude Code through hooks configured in Claude's `setti
 
 ## 📊 Event Logging
 
-Events are logged in JSON format to `claude-events.log` (or your configured log file):
+Events are logged in JSON format to `claude-events.jsonl` (or your configured log file):
 
 ```json
 {

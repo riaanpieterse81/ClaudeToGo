@@ -85,7 +85,7 @@ func main() {
 
 	// Initialize configuration with defaults
 	runtimeConfig := types.Config{
-		LogFile:      "claude-events.log",
+		LogFile:      "claude-events.jsonl",
 		PollInterval: 100 * time.Millisecond,
 		Verbose:      false,
 	}

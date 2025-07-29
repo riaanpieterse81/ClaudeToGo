@@ -27,6 +27,7 @@ Thumbs.db
 
 # Application specific
 claude-events.log
+claude-events.jsonl
 claudetogo-config.json
 *.backup
 

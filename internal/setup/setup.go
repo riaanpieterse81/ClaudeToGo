@@ -21,7 +21,7 @@ func RunWizard() error {
 	fmt.Println()
 
 	configFile := types.ConfigFile{
-		LogFile:      "claude-events.log",
+		LogFile:      "claude-events.jsonl",
 		PollInterval: "100ms",
 		Verbose:      false,
 	}
@@ -32,7 +32,7 @@ func RunWizard() error {
 	fmt.Println()
 
 	// Ask about log file location
-	fmt.Print("1. Where should events be logged? [claude-events.log]: ")
+	fmt.Print("1. Where should events be logged? [claude-events.jsonl]: ")
 	var logFileInput string
 	fmt.Scanln(&logFileInput)
 	if logFileInput != "" {
@@ -170,7 +170,7 @@ func ShowResults(config types.ConfigFile) {
 	var cmd strings.Builder
 	cmd.WriteString("./claudetogo --hook")
 
-	if config.LogFile != "claude-events.log" {
+	if config.LogFile != "claude-events.jsonl" {
 		cmd.WriteString(fmt.Sprintf(` --logfile "%s"`, config.LogFile))
 	}
 
@@ -187,7 +187,7 @@ func ShowResults(config types.ConfigFile) {
 	if config.Verbose {
 		monitorCmd += " --verbose"
 	}
-	if config.LogFile != "claude-events.log" {
+	if config.LogFile != "claude-events.jsonl" {
 		monitorCmd += fmt.Sprintf(` --logfile "%s"`, config.LogFile)
 	}
 	fmt.Printf("   %s\n", monitorCmd)
