@@ -33,3 +33,6 @@ claudetogo-config.json
 
 # Claude Code project files
 .claude/
+
+# Planning documentation
+planning/
