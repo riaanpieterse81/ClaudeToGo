@@ -1,0 +1,25 @@
+{
+  "type": "completion",
+  "session_id": "55b89c49-5738-4e48-9462-1056d58a2d61",
+  "title": "✅ Task Completed",
+  "message": "ABC",
+  "actions": [
+    {
+      "type": "info",
+      "label": "ℹ️ View Details",
+      "command": "claudetogo status --session 55b89c49-5738-4e48-9462-1056d58a2d61",
+      "description": "View full session details",
+      "icon": "ℹ️"
+    }
+  ],
+  "context": {
+    "cwd": "/home/riaanp/Development/claudetogo_project/claudetogo-cli",
+    "cwd_basename": "claudetogo-cli",
+    "formatted_at": "2025-07-30T20:47:46+02:00",
+    "session_id": "55b89c49-5738-4e48-9462-1056d58a2d61",
+    "summary": "ABC",
+    "task_status": "completed"
+  },
+  "timestamp": "2025-07-30T20:47:46+02:00",
+  "priority": "medium"
+}

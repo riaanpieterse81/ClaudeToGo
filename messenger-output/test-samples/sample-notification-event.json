@@ -1,0 +1,52 @@
+{
+  "type": "action_needed",
+  "session_id": "1fa8811f-2ec9-48c8-951d-bf524a17f8a9",
+  "title": "📝 File Creation Request",
+  "message": "Claude wants to create file: test.md\n\nContent preview:\nABC123",
+  "actions": [
+    {
+      "type": "approve",
+      "label": "✅ Approve",
+      "command": "claudetogo respond --session 1fa8811f-2ec9-48c8-951d-bf524a17f8a9 --action approve",
+      "description": "Allow Claude to create a new file",
+      "icon": "✅"
+    },
+    {
+      "type": "reject",
+      "label": "❌ Reject",
+      "command": "claudetogo respond --session 1fa8811f-2ec9-48c8-951d-bf524a17f8a9 --action reject",
+      "description": "Deny the create a new file request",
+      "icon": "❌"
+    },
+    {
+      "type": "modify",
+      "label": "✏️ Review File",
+      "command": "cat \"/home/riaanp/Development/claudetogo_project/claudetogo-cli/planning/test.md\"",
+      "description": "Review the file before approving",
+      "icon": "✏️"
+    },
+    {
+      "type": "info",
+      "label": "📖 More Info",
+      "command": "claudetogo info --session 1fa8811f-2ec9-48c8-951d-bf524a17f8a9",
+      "description": "Get more details about this request",
+      "icon": "📖"
+    }
+  ],
+  "context": {
+    "action": "create_file",
+    "content": "ABC123",
+    "content_preview": "ABC123",
+    "cwd": "/home/riaanp/Development/claudetogo_project/claudetogo-cli",
+    "cwd_basename": "claudetogo-cli",
+    "file_path": "/home/riaanp/Development/claudetogo_project/claudetogo-cli/planning/test.md",
+    "formatted_at": "2025-07-30T20:47:46+02:00",
+    "quick_approve": "claudetogo respond --session 1fa8811f-2ec9-48c8-951d-bf524a17f8a9 --action approve",
+    "quick_reject": "claudetogo respond --session 1fa8811f-2ec9-48c8-951d-bf524a17f8a9 --action reject",
+    "session_id": "1fa8811f-2ec9-48c8-951d-bf524a17f8a9",
+    "target_file": "/home/riaanp/Development/claudetogo_project/claudetogo-cli/planning/test.md",
+    "tool_name": "Write"
+  },
+  "timestamp": "2025-07-30T20:47:46+02:00",
+  "priority": "high"
+}

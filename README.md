@@ -1,19 +1,35 @@
 # ClaudeToGo
 
-A Go-based tool for logging and monitoring Claude Code hook events. ClaudeToGo intercepts and logs all tool usage events from Claude Code, providing insights into AI assistant interactions and tool usage patterns.
+A Go-based tool for logging, monitoring, and processing Claude Code hook events into messenger-friendly JSON files. ClaudeToGo intercepts Claude Code tool events and transforms them into actionable messages that enable remote interaction via messenger apps.
 
 ## 🎯 Purpose
 
-ClaudeToGo serves as a monitoring and logging solution for Claude Code hooks, currently implementing **Stage 1: Event Collection**. It captures all tool events for future analysis while allowing all operations to proceed normally.
+ClaudeToGo bridges the gap between Claude Code and messenger applications by:
+- **Monitoring** all Claude Code tool usage events with detailed metadata
+- **Processing** events into structured, user-friendly messenger formats
+- **Enabling** remote approval/rejection of Claude actions via messenger apps
+- **Providing** rich context for informed decision-making about AI assistant actions
 
 ## ✨ Features
 
+### Core Capabilities
 - **Event Logging**: Captures all Claude Code tool events with detailed metadata
 - **Real-time Monitoring**: Live monitoring of events as they occur
 - **Interactive Setup**: Guided setup wizard for easy configuration
 - **Automatic Hook Configuration**: Seamlessly integrates with Claude Code settings
+
+### 🆕 Messenger Integration (Phase 1 Complete)
+- **Smart Event Processing**: Converts raw Claude events into user-friendly messages
+- **Tool-Specific Formatting**: Specialized handling for Write, Read, WebFetch, Bash, Edit, List tools
+- **Rich Context Extraction**: Provides all necessary information for informed decisions
+- **Actionable Suggestions**: Generates approve/reject/review actions with executable commands
+- **JSON File Output**: Creates messenger-ready JSON files with emojis and structured data
+- **Batch Processing**: Handles multiple events efficiently with error handling
+
+### System Features
 - **Flexible Configuration**: JSON-based configuration with command-line overrides
 - **Graceful Shutdown**: Proper signal handling for clean exits
+- **Robust Error Handling**: Handles malformed data and missing files gracefully
 
 ## 🏗️ Architecture
 
@@ -23,15 +39,35 @@ The project follows Go best practices with a modular architecture:
 claudetogo/
 ├── cmd/claudetogo/          # Application entry point
 ├── internal/
-│   ├── types/              # Data structures and models
+│   ├── types/              # Data structures and models (enhanced with messenger types)
 │   ├── logger/             # Structured logging
 │   ├── config/             # Configuration management
 │   ├── hooks/              # Hook processing logic
 │   ├── monitor/            # Event monitoring
 │   ├── setup/              # Setup wizard
-│   └── claude/             # Claude Code settings management
+│   ├── claude/             # Claude Code settings management
+│   ├── transcript/         # 🆕 Transcript file parsing and processing
+│   ├── extractor/          # 🆕 Event data extraction engine
+│   ├── formatter/          # 🆕 Messenger message formatting
+│   └── processor/          # 🆕 Complete processing pipeline
+├── messenger-output/        # 🆕 Generated JSON files for messenger apps
+├── planning/               # 🆕 Documentation and strategy files
 ├── go.mod                  # Go module definition
 └── README.md               # This file
+```
+
+### Processing Pipeline
+
+```mermaid
+graph TD
+    A[Claude Code Hook] --> B[claudetogo --hook]
+    B --> C[claude-events.jsonl]
+    C --> D[Event Processor]
+    D --> E[Transcript Reader]
+    E --> F[Data Extractor]
+    F --> G[Message Formatter]
+    G --> H[JSON File Output]
+    H --> I[Messenger App]
 ```
 
 ## 🚀 Getting Started
@@ -119,6 +155,24 @@ Options:
 ./claudetogo --logfile custom.log        # Use custom log file
 ```
 
+### 🆕 Messenger Processing (Phase 1)
+
+**Process Events into Messenger JSON:**
+```bash
+# Build the application first
+go build -o claudetogo ./cmd/claudetogo
+
+# Process all events from claude-events.jsonl
+go run test-phase1.go                    # Run test script to see processing in action
+
+# Or create your own processing script using the processor package
+```
+
+**Generated Output:**
+- JSON files in `messenger-output/` directory
+- Sample files in `messenger-output/test-samples/`
+- Each file contains user-friendly messages with suggested actions
+
 ## ⚙️ Configuration
 
 ### Configuration File
@@ -174,7 +228,9 @@ The tool integrates with Claude Code through hooks configured in Claude's `setti
 }
 ```
 
-## 📊 Event Logging
+## 📊 Event Logging & Processing
+
+### Raw Event Logging
 
 Events are logged in JSON format to `claude-events.jsonl` (or your configured log file):
 
@@ -187,6 +243,68 @@ Events are logged in JSON format to `claude-events.jsonl` (or your configured lo
   "tool_name": "Bash",
   "timestamp": "2024-07-29T14:35:49Z",
   "message": "Claude needs your permission to use Bash"
+}
+```
+
+### 🆕 Processed Messenger Output
+
+**Stop Event (Task Completion):**
+```json
+{
+  "type": "completion",
+  "session_id": "1fa8811f-2ec9-48c8-951d-bf524a17f8a9",
+  "title": "✅ Task Completed",
+  "message": "Created `test.md` in the planning folder with the text \"ABC123\".",
+  "actions": [
+    {
+      "type": "info",
+      "label": "ℹ️ View Details",
+      "command": "claudetogo status --session 1fa8811f",
+      "description": "View full session details",
+      "icon": "ℹ️"
+    }
+  ],
+  "context": {
+    "cwd": "/home/user/project",
+    "task_status": "completed",
+    "session_id": "1fa8811f-2ec9-48c8-951d-bf524a17f8a9"
+  },
+  "timestamp": "2025-07-30T10:35:28.927Z",
+  "priority": "medium"
+}
+```
+
+**Notification Event (Action Required):**
+```json
+{
+  "type": "action_needed",
+  "session_id": "1fa8811f-2ec9-48c8-951d-bf524a17f8a9",
+  "title": "📝 File Creation Request",
+  "message": "Claude wants to create file: test.md\n\nContent preview:\nABC123",
+  "actions": [
+    {
+      "type": "approve",
+      "label": "✅ Approve",
+      "command": "claudetogo respond --session 1fa8811f --action approve",
+      "description": "Allow Claude to create the file",
+      "icon": "✅"
+    },
+    {
+      "type": "reject",
+      "label": "❌ Reject",
+      "command": "claudetogo respond --session 1fa8811f --action reject",
+      "description": "Deny the file creation",
+      "icon": "❌"
+    }
+  ],
+  "context": {
+    "tool_name": "Write",
+    "target_file": "/home/user/project/test.md",
+    "content_preview": "ABC123",
+    "cwd": "/home/user/project"
+  },
+  "timestamp": "2025-07-30T10:35:21.183Z",
+  "priority": "high"
 }
 ```
 
@@ -216,14 +334,25 @@ go test -cover ./...
 
 ### Project Structure
 
+**Core Components:**
 - **`cmd/claudetogo/`**: Main application entry point
-- **`internal/types/`**: Core data structures and types
+- **`internal/types/`**: Core data structures and types (enhanced with messenger types)
 - **`internal/logger/`**: Structured logging utilities
 - **`internal/config/`**: Configuration loading and management
 - **`internal/hooks/`**: Hook event processing logic
 - **`internal/monitor/`**: Real-time event monitoring
 - **`internal/setup/`**: Interactive setup wizard
 - **`internal/claude/`**: Claude Code settings management
+
+**🆕 Messenger Processing Components:**
+- **`internal/transcript/`**: Transcript file parsing and content extraction
+- **`internal/extractor/`**: Event data extraction and tool-specific processing
+- **`internal/formatter/`**: Messenger message formatting with emojis and actions
+- **`internal/processor/`**: Complete processing pipeline from events to JSON files
+
+**Output:**
+- **`messenger-output/`**: Generated JSON files ready for messenger apps
+- **`messenger-output/test-samples/`**: Sample outputs for testing
 
 ## 🤝 Contributing
 
@@ -252,13 +381,37 @@ If you encounter any issues or have questions:
 
 ## 🚀 Roadmap
 
-**Current Stage: Event Collection**
-- ✅ Hook event logging
-- ✅ Real-time monitoring
+### ✅ Phase 1: Core Data Processing Infrastructure (COMPLETED)
+- ✅ Hook event logging and real-time monitoring
 - ✅ Automatic Claude Code configuration
+- ✅ **Transcript file parsing and processing**
+- ✅ **Event data extraction engine**
+- ✅ **Messenger message formatting**
+- ✅ **JSON file generation for messenger apps**
+- ✅ **Tool-specific processing** (Write, Read, WebFetch, Bash, Edit, List)
+- ✅ **Comprehensive testing** with real data (18 events processed)
 
-**Future Stages:**
-- 🔄 Event analysis and reporting
-- 🔄 Advanced filtering and rules
-- 🔄 Web dashboard for visualization
-- 🔄 Integration with other tools
+### 🔄 Phase 2: CLI Integration and Service Mode (NEXT)
+- 🔄 **CLI Command Integration**: Add `claudetogo process` commands
+- 🔄 **Background Service Mode**: File watching and continuous processing
+- 🔄 **Response Handling**: `claudetogo respond` for user actions
+- 🔄 **Configuration System**: YAML config for deployment options
+
+### 📋 Phase 3: Advanced Integration (FUTURE)
+- 📋 **Webhook Integration**: Real-time notifications to external systems
+- 📋 **Multi-Platform Support**: Slack, Telegram, etc. integrations
+- 📋 **Advanced Deployment**: Daemon mode and service management
+- 📋 **Enhanced Monitoring**: Metrics and health checks
+
+### 🎯 Current Capabilities
+
+**Ready for Use:**
+- Process existing events into messenger JSON: `go run test-phase1.go`
+- Generate sample outputs in `messenger-output/test-samples/`
+- Handle both completion notifications and action requests
+- Provide rich context and suggested actions for each event type
+
+**Integration Ready:**
+- JSON files contain all necessary data for messenger app integration
+- Suggested actions include executable commands for user responses
+- Rich context provides full information for informed decision-making

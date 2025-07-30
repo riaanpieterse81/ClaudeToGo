@@ -1,0 +1,51 @@
+{
+  "type": "action_needed",
+  "session_id": "ffc70d26-0f03-4acf-8373-78e1e2a89b5f",
+  "title": "⚡ Command Execution Request",
+  "message": "Claude wants to run: go run test-phase1.go",
+  "actions": [
+    {
+      "type": "approve",
+      "label": "✅ Approve",
+      "command": "claudetogo respond --session ffc70d26-0f03-4acf-8373-78e1e2a89b5f --action approve",
+      "description": "Allow Claude to execute a command",
+      "icon": "✅"
+    },
+    {
+      "type": "reject",
+      "label": "❌ Reject",
+      "command": "claudetogo respond --session ffc70d26-0f03-4acf-8373-78e1e2a89b5f --action reject",
+      "description": "Deny the execute a command request",
+      "icon": "❌"
+    },
+    {
+      "type": "info",
+      "label": "ℹ️ Command Info",
+      "command": "man go",
+      "description": "Get more information about this command",
+      "icon": "ℹ️"
+    },
+    {
+      "type": "info",
+      "label": "📖 More Info",
+      "command": "claudetogo info --session ffc70d26-0f03-4acf-8373-78e1e2a89b5f",
+      "description": "Get more details about this request",
+      "icon": "📖"
+    }
+  ],
+  "context": {
+    "action": "execute_command",
+    "command": "go run test-phase1.go",
+    "command_description": "Test Phase 1 implementation with all fixes",
+    "cwd": "/home/riaanp/Development/claudetogo_project/claudetogo-cli",
+    "cwd_basename": "claudetogo-cli",
+    "description": "Test Phase 1 implementation with all fixes",
+    "formatted_at": "2025-07-30T20:47:46+02:00",
+    "quick_approve": "claudetogo respond --session ffc70d26-0f03-4acf-8373-78e1e2a89b5f --action approve",
+    "quick_reject": "claudetogo respond --session ffc70d26-0f03-4acf-8373-78e1e2a89b5f --action reject",
+    "session_id": "ffc70d26-0f03-4acf-8373-78e1e2a89b5f",
+    "tool_name": "Bash"
+  },
+  "timestamp": "2025-07-30T20:47:46+02:00",
+  "priority": "high"
+}
