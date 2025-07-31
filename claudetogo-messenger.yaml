@@ -1,0 +1,44 @@
+# ClaudeToGo Messenger Configuration
+# This file configures the messenger integration features of ClaudeToGo
+
+# Messenger output settings
+messenger:
+  output_dir: "messenger-output"     # Directory for generated JSON files
+  file_format: "json"                # Output format: "json" or "jsonl"
+  include_samples: true              # Generate sample files for testing
+
+# Event processing settings
+processing:
+  watch_mode: false                  # Enable automatic file watching
+  poll_interval: "2s"                # How often to check for new events
+  max_events_per_batch: 10           # Maximum events to process at once
+  auto_process: false                # Automatically process new events
+  process_latest_only: 0             # Only process N latest events (0 = all)
+
+# Background service settings
+service:
+  enabled: false                     # Enable background service mode
+  daemon_mode: false                 # Run as daemon (background process)
+  pid_file: ""                       # PID file location (empty = auto)
+  log_level: "info"                  # Log level: debug, info, warn, error
+  service_interval: "2s"             # Service check interval
+  status_file: ""                    # Status file location (empty = auto)
+  auto_restart: false                # Automatically restart on failure
+
+# Message formatting settings
+formatting:
+  include_emojis: true               # Include emojis in messages
+  max_message_length: 1000           # Maximum message length
+  max_content_preview: 200           # Maximum content preview length
+  timestamp_format: "2006-01-02 15:04:05"  # Timestamp format
+  use_relative_time: false           # Use relative timestamps (e.g., "2 hours ago")
+
+# External integration settings
+integrations:
+  webhook_url: ""                    # HTTP webhook URL for notifications
+  slack_token: ""                    # Slack bot token
+  telegram_token: ""                 # Telegram bot token
+  custom_headers: {}                 # Custom HTTP headers for webhooks
+  retry_attempts: 3                  # Number of retry attempts
+  retry_interval: "1s"               # Interval between retries
+  timeout_duration: "30s"            # Request timeout duration

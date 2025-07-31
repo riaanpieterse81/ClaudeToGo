@@ -18,13 +18,21 @@ ClaudeToGo bridges the gap between Claude Code and messenger applications by:
 - **Interactive Setup**: Guided setup wizard for easy configuration
 - **Automatic Hook Configuration**: Seamlessly integrates with Claude Code settings
 
-### 🆕 Messenger Integration (Phase 1 Complete)
+### ✅ Messenger Integration (Phase 1 & 2 Complete)
 - **Smart Event Processing**: Converts raw Claude events into user-friendly messages
 - **Tool-Specific Formatting**: Specialized handling for Write, Read, WebFetch, Bash, Edit, List tools
 - **Rich Context Extraction**: Provides all necessary information for informed decisions
 - **Actionable Suggestions**: Generates approve/reject/review actions with executable commands
 - **JSON File Output**: Creates messenger-ready JSON files with emojis and structured data
 - **Batch Processing**: Handles multiple events efficiently with error handling
+
+### 🆕 CLI Integration (Phase 2 Complete)
+- **Processing Commands**: Complete CLI suite for event processing and statistics
+- **Background Service**: Real-time event monitoring with `--service` mode
+- **Response Handling**: Interactive approval/rejection of Claude actions
+- **Session Management**: Track and query session status and history
+- **YAML Configuration**: Comprehensive configuration system with validation
+- **Error Recovery**: Robust error handling and graceful shutdown
 
 ### System Features
 - **Flexible Configuration**: JSON-based configuration with command-line overrides
@@ -46,10 +54,13 @@ claudetogo/
 │   ├── monitor/            # Event monitoring
 │   ├── setup/              # Setup wizard
 │   ├── claude/             # Claude Code settings management
-│   ├── transcript/         # 🆕 Transcript file parsing and processing
-│   ├── extractor/          # 🆕 Event data extraction engine
-│   ├── formatter/          # 🆕 Messenger message formatting
-│   └── processor/          # 🆕 Complete processing pipeline
+│   ├── transcript/         # ✅ Transcript file parsing and processing
+│   ├── extractor/          # ✅ Event data extraction engine
+│   ├── formatter/          # ✅ Messenger message formatting
+│   ├── processor/          # ✅ Complete processing pipeline
+│   ├── service/            # 🆕 Background service and file watching
+│   ├── responder/          # 🆕 Response handling and session management
+│   └── config/             # 🆕 YAML configuration system (enhanced)
 ├── messenger-output/        # 🆕 Generated JSON files for messenger apps
 ├── planning/               # 🆕 Documentation and strategy files
 ├── go.mod                  # Go module definition
@@ -107,77 +118,112 @@ The setup wizard will guide you through:
 
 ### Command Line Options
 
-```bash
-Usage: claudetogo [options]
+ClaudeToGo provides a comprehensive CLI with multiple command categories:
 
-Options:
-  -config string
-        Path to configuration file (JSON format)
-  -help
-        Show help information
-  -hook
-        Process hook event from stdin (for Claude Code hooks)
-  -logfile string
-        Path to log file (default "claude-events.jsonl")
-  -monitor
-        Monitor events in real-time
-  -poll-interval duration
-        Polling interval for monitoring (default 100ms)
-  -setup
-        Run interactive setup wizard
-  -verbose
-        Enable verbose debug output
+#### Basic Commands
+```bash
+claudetogo --help                           # Show help information
+claudetogo --setup                          # Run interactive setup wizard
+claudetogo --hook                           # Process hook event from stdin
+claudetogo --monitor                        # Monitor events in real-time
+claudetogo --config myconfig.json           # Use custom configuration file
 ```
 
-### Common Commands
-
-**Setup and Configuration:**
+#### Processing Commands  
 ```bash
-./claudetogo --setup                     # Run setup wizard
-./claudetogo --help                      # Show help
+claudetogo --process                        # Process all events
+claudetogo --process --latest 5             # Process latest 5 events only
+claudetogo --process --generate-samples     # Generate test samples
+claudetogo --process --stats                # Show processing statistics
+claudetogo --process --watch --interval 5s  # Watch for new events
+claudetogo --process --output-dir custom/   # Use custom output directory
 ```
 
-**Hook Processing (used by Claude Code):**
+#### Response Commands
 ```bash
-./claudetogo --hook                      # Process hook event from stdin
-./claudetogo --hook --verbose            # Process with debug output
+claudetogo --respond --session ID --action approve   # Approve a pending action
+claudetogo --respond --session ID --action reject    # Reject a pending action
+claudetogo --status --session ID                     # Get session status
+claudetogo --pending                                 # List pending actions
 ```
 
-**Monitoring:**
+#### Service Commands
 ```bash
-./claudetogo --monitor                   # Monitor events in real-time
-./claudetogo --monitor --verbose         # Monitor with debug output
+claudetogo --service                                 # Run as background service
+claudetogo --service --daemon                        # Run as daemon
+claudetogo --service --interval 10s                  # Custom service interval
 ```
 
-**Custom Configuration:**
+#### Configuration Commands
 ```bash
-./claudetogo --config myconfig.json      # Use custom config file
-./claudetogo --logfile custom.log        # Use custom log file
+claudetogo --config-init                             # Create example config file
+claudetogo --config-show                             # Show current configuration
+claudetogo --config-validate config.yaml            # Validate configuration
+claudetogo --messenger-config myconfig.yaml         # Use custom messenger config
 ```
 
-### 🆕 Messenger Processing (Phase 1)
+### Example Workflows
 
-**Process Events into Messenger JSON:**
+**Initial Setup:**
 ```bash
-# Build the application first
+# Build and set up ClaudeToGo
 go build -o claudetogo ./cmd/claudetogo
+./claudetogo --setup                     # Configure Claude Code integration
+./claudetogo --config-init               # Create messenger configuration
+```
 
-# Process all events from claude-events.jsonl
-go run test-phase1.go                    # Run test script to see processing in action
+**Processing Events:**
+```bash
+# Check what events are available
+./claudetogo --process --stats           # Show event statistics
 
-# Or create your own processing script using the processor package
+# Process events into messenger-friendly JSON
+./claudetogo --process                   # Process all events
+./claudetogo --process --latest 5        # Process latest 5 events only
+./claudetogo --process --generate-samples # Create test samples
+```
+
+**Managing Actions:**
+```bash
+# Check for pending actions
+./claudetogo --pending                   # List all pending actions
+
+# Review specific session
+./claudetogo --status --session SESSION_ID
+
+# Respond to actions
+./claudetogo --respond --session SESSION_ID --action approve
+./claudetogo --respond --session SESSION_ID --action reject
+```
+
+**Background Processing:**
+```bash
+# Run continuous monitoring
+./claudetogo --service                   # Run in foreground
+./claudetogo --service --daemon          # Run in background
+./claudetogo --process --watch           # Watch for new events
+```
+
+**Configuration Management:**
+```bash
+./claudetogo --config-show               # View current configuration
+./claudetogo --config-validate config.yaml # Validate configuration file
 ```
 
 **Generated Output:**
 - JSON files in `messenger-output/` directory
 - Sample files in `messenger-output/test-samples/`
+- Response tracking in `messenger-output/responses/`
 - Each file contains user-friendly messages with suggested actions
 
 ## ⚙️ Configuration
 
-### Configuration File
+### Configuration System
 
-ClaudeToGo uses JSON configuration files. The setup wizard creates `claudetogo-config.json`:
+ClaudeToGo supports two types of configuration:
+
+#### 1. Basic Configuration (JSON)
+The setup wizard creates `claudetogo-config.json` for basic settings:
 
 ```json
 {
@@ -185,6 +231,45 @@ ClaudeToGo uses JSON configuration files. The setup wizard creates `claudetogo-c
   "pollInterval": "100ms",
   "verbose": false
 }
+```
+
+#### 2. Messenger Configuration (YAML)  
+For advanced messenger features, create `claudetogo-messenger.yaml`:
+
+```yaml
+# Generate example config with: claudetogo --config-init
+messenger:
+  output_dir: "messenger-output"     # Directory for JSON files
+  file_format: "json"                # Output format: json or jsonl
+  include_samples: true              # Generate sample files
+
+processing:
+  watch_mode: false                  # Enable automatic file watching
+  poll_interval: "2s"                # How often to check for new events
+  max_events_per_batch: 10           # Maximum events to process at once
+
+service:
+  enabled: false                     # Enable background service mode
+  daemon_mode: false                 # Run as daemon process
+  log_level: "info"                  # Log level: debug, info, warn, error
+  service_interval: "2s"             # Service check interval
+
+formatting:
+  include_emojis: true               # Include emojis in messages
+  max_message_length: 1000           # Maximum message length
+  max_content_preview: 200           # Maximum content preview length
+
+integrations:
+  webhook_url: ""                    # HTTP webhook URL for notifications
+  slack_token: ""                    # Slack bot token
+  telegram_token: ""                 # Telegram bot token
+```
+
+**Configuration Commands:**
+```bash
+./claudetogo --config-init           # Create example messenger config
+./claudetogo --config-show           # Show current configuration
+./claudetogo --config-validate config.yaml # Validate configuration
 ```
 
 ### Claude Code Integration
@@ -344,15 +429,21 @@ go test -cover ./...
 - **`internal/setup/`**: Interactive setup wizard
 - **`internal/claude/`**: Claude Code settings management
 
-**🆕 Messenger Processing Components:**
+**✅ Messenger Processing Components (Phase 1):**
 - **`internal/transcript/`**: Transcript file parsing and content extraction
 - **`internal/extractor/`**: Event data extraction and tool-specific processing
 - **`internal/formatter/`**: Messenger message formatting with emojis and actions
 - **`internal/processor/`**: Complete processing pipeline from events to JSON files
 
+**🆕 CLI Integration Components (Phase 2):**
+- **`internal/service/`**: Background service and file watching capabilities
+- **`internal/responder/`**: Response handling and session management
+- **`internal/config/`**: Enhanced YAML configuration system
+
 **Output:**
 - **`messenger-output/`**: Generated JSON files ready for messenger apps
 - **`messenger-output/test-samples/`**: Sample outputs for testing
+- **`messenger-output/responses/`**: User response tracking files
 
 ## 🤝 Contributing
 
@@ -389,29 +480,40 @@ If you encounter any issues or have questions:
 - ✅ **Messenger message formatting**
 - ✅ **JSON file generation for messenger apps**
 - ✅ **Tool-specific processing** (Write, Read, WebFetch, Bash, Edit, List)
-- ✅ **Comprehensive testing** with real data (18 events processed)
+- ✅ **Comprehensive testing** with real data
 
-### 🔄 Phase 2: CLI Integration and Service Mode (NEXT)
-- 🔄 **CLI Command Integration**: Add `claudetogo process` commands
-- 🔄 **Background Service Mode**: File watching and continuous processing
-- 🔄 **Response Handling**: `claudetogo respond` for user actions
-- 🔄 **Configuration System**: YAML config for deployment options
+### ✅ Phase 2: CLI Integration and Service Mode (COMPLETED)
+- ✅ **CLI Command Integration**: Complete `claudetogo --process` command suite
+- ✅ **Background Service Mode**: Full file watching with `claudetogo --service`
+- ✅ **Response Handling**: Complete `claudetogo --respond` system for user actions
+- ✅ **Configuration System**: Full YAML config system with validation
+- ✅ **Session Management**: Track and query session status and history
+- ✅ **Error Recovery**: Robust error handling and graceful shutdown
 
-### 📋 Phase 3: Advanced Integration (FUTURE)
+### 📋 Phase 3: Advanced Integration (NEXT)
 - 📋 **Webhook Integration**: Real-time notifications to external systems
-- 📋 **Multi-Platform Support**: Slack, Telegram, etc. integrations
-- 📋 **Advanced Deployment**: Daemon mode and service management
-- 📋 **Enhanced Monitoring**: Metrics and health checks
+- 📋 **Multi-Platform Support**: Direct Slack, Telegram, etc. integrations
+- 📋 **Advanced Deployment**: Enhanced daemon mode and service management
+- 📋 **Enhanced Monitoring**: Metrics, health checks, and observability
 
 ### 🎯 Current Capabilities
 
-**Ready for Use:**
-- Process existing events into messenger JSON: `go run test-phase1.go`
-- Generate sample outputs in `messenger-output/test-samples/`
-- Handle both completion notifications and action requests
-- Provide rich context and suggested actions for each event type
+**✅ Production Ready:**
+- **Complete CLI Suite**: Process events, manage responses, configure system
+- **Background Service**: Continuous event monitoring with `--service` mode
+- **Interactive Response System**: Approve/reject Claude actions with full tracking
+- **Configuration Management**: YAML configuration with validation and auto-discovery
+- **Session Management**: Track session status, history, and user responses
+- **Error Handling**: Robust error recovery and comprehensive validation
 
-**Integration Ready:**
-- JSON files contain all necessary data for messenger app integration
-- Suggested actions include executable commands for user responses
-- Rich context provides full information for informed decision-making
+**✅ Integration Ready:**
+- **Messenger JSON Output**: Ready for webhook, Slack, Telegram integration
+- **Executable Commands**: All actions include exact commands for user responses
+- **Rich Context**: Full session context for informed decision-making
+- **Response Tracking**: Complete audit trail of user actions and decisions
+
+**✅ Tested and Verified:**
+- All CLI commands tested and working with real data
+- Configuration validation with comprehensive error handling
+- Response system with session tracking and status management
+- Background service with graceful shutdown and error recovery
